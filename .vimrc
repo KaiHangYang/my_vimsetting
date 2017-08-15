@@ -37,6 +37,8 @@ Plugin 'kshenoy/vim-signature'
 Plugin 'Valloric/YouCompleteMe'
 " muti windows
 Plugin 'fholgado/minibufexpl.vim'
+" syntax highlight for python
+Plugin 'hdima/python-syntax'
 call vundle#end()
 filetype plugin indent on
 """"""""""""""""" set the scheme
@@ -148,12 +150,13 @@ let g:ycm_collect_identifiers_from_tags_files=1
 set tags+=/usr/include/c++/5.4.0/stdcpp.tags
 let g:ycm_global_ycm_extra_conf='/home/kaihang/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 " set the color scheme 
-highlight Pmenu ctermfg=2 ctermbg=3 guifg=#005f87 guibg=#EEE8D5
-highlight PmenuSel ctermfg=2 ctermbg=3 guifg=#AFD700 guibg=#106900
+" highlight YcmWarningLine guibg=#3f0000
 " 补全功能在注释中同样有效
 let g:ycm_complete_in_comments=1
 " 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
-let g:ycm_confirm_extra_conf=0
+let g:ycm_confirm_extra_conf=1
+" open the pyhton support
+let g:ycm_python_binary_path='python'
 """""""""""""" NERDtree
 " 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
 nmap <F2> :NERDTreeToggle<CR>
@@ -169,9 +172,14 @@ let NERDTreeMinimalUI=1
 let NERDTreeAutoDeleteBuffer=1
 
 """"""""""""""MiniBuff setting
-map <Leader>bl :MBEToggle<CR>
+map <Leader>bt :MBEToggle<CR>
+map <Leader>bd :MBEbd<CR>
 map <Leader><Tab> :MBEbn<cr>
 map <Leader><S-Tab> :MBEbp<cr>
+""""""""""""" python-syntax setting
+let python_highlight_all=1
+"""""""""" YCM jump
+map <Leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 """""""""""""" VIM SETTING WITHOUT PLUGINS """""""""""""""""
 map <Left> <Nop>
@@ -265,3 +273,7 @@ set backspace=indent,eol,start
 "map <leader>ss :mksession! my.vim<cr> :wviminfo! my.viminfo<cr>
 "" 恢复快捷键
 "map <leader>rs :source my.vim<cr> :rviminfo my.viminfo<cr>
+" set the height and color of the popup
+highlight Pmenu ctermfg=7 ctermbg=4 guifg=#005f87 guibg=#EEE8D5
+highlight PmenuSel ctermfg=0 ctermbg=2 guifg=#AFD700 guibg=#106900
+set pumheight=8
