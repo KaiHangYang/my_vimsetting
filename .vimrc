@@ -20,6 +20,7 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'derekwyatt/vim-protodef'
 Plugin 'suan/vim-instant-markdown'
+Plugin 'altercation/vim-colors-solarized'
 Plugin 'majutsushi/tagbar'
 " 缩进显示管理
 Plugin 'nathanaelkane/vim-indent-guides'
@@ -30,7 +31,7 @@ Plugin 'vim-scripts/vimprj'
 Plugin 'vim-scripts/DfrankUtil'
 Plugin 'vim-scripts/indexer.tar.gz'
 " 代码收藏显示 
-Plugin 'kshenoy/vim-signature'
+" Plugin 'kshenoy/vim-signature'
 " Plugin 'vim-scripts/OmniCppComplete'
 " template complete
 " vim syntax complete YCM
@@ -39,6 +40,10 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'fholgado/minibufexpl.vim'
 " syntax highlight for python
 Plugin 'hdima/python-syntax'
+" Plugin 'python-mode/python-mode'
+Plugin 'jiangmiao/auto-pairs'
+" AsyncRun
+Plugin 'skywind3000/asyncrun.vim'
 call vundle#end()
 filetype plugin indent on
 """"""""""""""""" set the scheme
@@ -180,7 +185,6 @@ map <Leader><S-Tab> :MBEbp<cr>
 let python_highlight_all=1
 """""""""" YCM jump
 map <Leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-
 """""""""""""" VIM SETTING WITHOUT PLUGINS """""""""""""""""
 map <Left> <Nop>
 map <Right> <Nop>
@@ -188,10 +192,11 @@ map <Up> <Nop>
 map <Down> <Nop>
 
 " switch at the paired symbol
-nmap <Leader>M %
+nmap <Leader>m %
+vmap <Leader>m %
 
 " leave feel lines while scrolling
-set scrolloff=7
+set scrolloff=20
 
 " Copy the select thing to system clipboard
 vnoremap <Leader>y "+y
@@ -237,13 +242,12 @@ if has("autocmd")
 	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | 
 endif
 " disable the cursor blink and the scroll bar
-set gcr=a:block-blinkon0
 " change the font type
 set guifont=YaHei\ Consolas\ Hybrid\ 11.5
 " 禁止代码折行
 set nowrap
 " 禁止光标闪烁
-set gcr=a:block-blinkon0
+set gcr=a:block-blinkoff1
 " 禁止显示滚动条
 set guioptions-=l
 set guioptions-=L
@@ -277,3 +281,46 @@ set backspace=indent,eol,start
 highlight Pmenu ctermfg=7 ctermbg=4 guifg=#005f87 guibg=#EEE8D5
 highlight PmenuSel ctermfg=0 ctermbg=2 guifg=#AFD700 guibg=#106900
 set pumheight=8
+" set the selection color of visual mode
+highlight Visual ctermfg=White ctermbg=Gray gui=none
+
+""""""""""" run python 
+map <Leader><F5> :call <SID>CompileRunGccOut()<CR>
+function! s:CompileRunGccOut()
+    exec "w"
+    if &filetype == 'c'
+        exec "!gcc % -o %<;time ./%<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<; time ./%<"
+    elseif &filetype == 'sh'
+        exec "!time bash %"
+    elseif &filetype == 'python'
+        exec "!time python %"
+    endif
+endfunction
+
+map <F5> :call <SID>CompileRunGcc()<CR>
+augroup SPACEVIM ASYNCRUN
+    autocmd!
+    " Automatically open the quickfix window
+    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(15, 1)
+augroup END
+function! s:CompileRunGcc()
+    exec "w"
+    if &filetype == 'c'
+        exec "AsyncRun! gcc % -o %<;time ./%<"
+    elseif &filetype == 'cpp'
+        exec "AsyncRun! g++ % -o %<; time ./%<"
+    elseif &filetype == 'sh'
+        exec "AsyncRun! time bash %"
+    elseif &filetype == 'python'
+        exec "AsyncRun! time python %"
+    endif
+endfunction
+" set the undo history
+set undodir=~/.vim/undo_history
+set undofile
+
+" set one key make 
+" nmap <Leader><F5> :wa<CR>:make<CR><CR>:cw<CR>
+nmap <Leader>r :wa<CR>:make<CR>:cw<CR><CR>:!./main<CR>
