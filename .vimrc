@@ -1,5 +1,4 @@
-" 2017-08-14 Kaihang
-
+" 2019-03-14 Kaihang
 
 let mapleader=','
 let g:mapleader=','
@@ -30,6 +29,10 @@ Plugin 'derekwyatt/vim-fswitch'
 Plugin 'vim-scripts/vimprj'
 Plugin 'vim-scripts/DfrankUtil'
 Plugin 'vim-scripts/indexer.tar.gz'
+
+" glsl highlight
+Plugin 'tikhomirov/vim-glsl'
+
 " 代码收藏显示 
 " Plugin 'kshenoy/vim-signature'
 " Plugin 'vim-scripts/OmniCppComplete'
@@ -44,6 +47,9 @@ Plugin 'hdima/python-syntax'
 Plugin 'jiangmiao/auto-pairs'
 " AsyncRun
 Plugin 'skywind3000/asyncrun.vim'
+" 配色方案
+Plugin 'sickill/vim-monokai'
+
 call vundle#end()
 filetype plugin indent on
 """"""""""""""""" set the scheme
@@ -56,7 +62,8 @@ set cursorcolumn
 set hlsearch
 let g:Powerline_colorscheme='solarized256'
 set background=dark
-colorscheme molokai
+colorscheme monokai
+hi Normal ctermfg=252 ctermbg=none
 
 """""""""""""" vim-indent guide config
 let g:indent_guides_enable_on_vim_startup=1
@@ -152,19 +159,17 @@ let g:ycm_seed_idettifiers_with_syntax=1
 " 开启 YCM 标签引擎
 let g:ycm_collect_identifiers_from_tags_files=1
 " 引入 C++ 标准库tags
-set tags+=/usr/include/c++/5.4.0/stdcpp.tags
-let g:ycm_global_ycm_extra_conf='/home/kaihang/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
-" set the color scheme 
-" highlight YcmWarningLine guibg=#3f0000
+"set tags+=/usr/include/c++/5.4.0/stdcpp.tags
+"let g:ycm_global_ycm_extra_conf='/home/kaihang/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 " 补全功能在注释中同样有效
 let g:ycm_complete_in_comments=1
 " 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
-let g:ycm_confirm_extra_conf=1
+"let g:ycm_confirm_extra_conf=0
 " open the pyhton support
-let g:ycm_python_binary_path='python'
+let g:ycm_python_binary_path='python3'
 """""""""""""" NERDtree
 " 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
-nmap <F2> :NERDTreeToggle<CR>
+"nmap <C-F1> :NERDTreeToggle<CR>
 " 设置NERDTree子窗口宽度
 let NERDTreeWinSize=32
 " 设置NERDTree子窗口位置
@@ -269,10 +274,10 @@ set backspace=indent,eol,start
 
 " vim 保存环境
 "" 设置环境保存项
-"set sessionoptions="blank,buffers,globals,localoptions,tabpages,sesdir,folds,help,options,resize,winpos,winsize"
+set sessionoptions="blank,buffers,globals,localoptions,tabpages,sesdir,folds,help,options,resize,winpos,winsize"
 "" 保存 undo 历史
-"set undodir=~/.undo_history/
-"set undofile
+set undodir=~/.vim/.undo_history/
+set undofile
 "" 保存快捷键
 "map <leader>ss :mksession! my.vim<cr> :wviminfo! my.viminfo<cr>
 "" 恢复快捷键
@@ -285,42 +290,46 @@ set pumheight=8
 highlight Visual ctermfg=White ctermbg=Gray gui=none
 
 """"""""""" run python 
-map <Leader><F5> :call <SID>CompileRunGccOut()<CR>
-function! s:CompileRunGccOut()
-    exec "w"
-    if &filetype == 'c'
-        exec "!gcc % -o %<;time ./%<"
-    elseif &filetype == 'cpp'
-        exec "!g++ % -o %<; time ./%<"
-    elseif &filetype == 'sh'
-        exec "!time bash %"
-    elseif &filetype == 'python'
-        exec "!time python %"
-    endif
-endfunction
+"map <Leader><F5> :call <SID>CompileRunGccOut()<CR>
+"function! s:CompileRunGccOut()
+    "exec "w"
+    "if &filetype == 'c'
+        "exec "!clang % -o %<;time ./%<"
+    "elseif &filetype == 'cpp'
+        "exec "!clang++ % -o %<; time ./%<"
+    "elseif &filetype == 'sh'
+        "exec "!time bash %"
+    "elseif &filetype == 'python'
+        "exec "!time python %"
+    "endif
+"endfunction
 
-map <F5> :call <SID>CompileRunGcc()<CR>
-augroup SPACEVIM ASYNCRUN
-    autocmd!
-    " Automatically open the quickfix window
-    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(15, 1)
-augroup END
-function! s:CompileRunGcc()
-    exec "w"
-    if &filetype == 'c'
-        exec "AsyncRun! gcc % -o %<;time ./%<"
-    elseif &filetype == 'cpp'
-        exec "AsyncRun! g++ % -o %<; time ./%<"
-    elseif &filetype == 'sh'
-        exec "AsyncRun! time bash %"
-    elseif &filetype == 'python'
-        exec "AsyncRun! time python %"
-    endif
-endfunction
-" set the undo history
-set undodir=~/.vim/undo_history
-set undofile
+"map <F5> :call <SID>CompileRunGcc()<CR>
+"augroup SPACEVIM ASYNCRUN
+    "autocmd!
+    "" Automatically open the quickfix window
+    "autocmd User AsyncRunStart call asyncrun#quickfix_toggle(15, 1)
+"augroup END
+"function! s:CompileRunGcc()
+    "exec "w"
+    "if &filetype == 'c'
+        "exec "AsyncRun! clang % -o ./%<;time ./%<"
+    "elseif &filetype == 'cpp'
+        "exec "AsyncRun! clang++ % -o ./%<; time ./%<"
+    "elseif &filetype == 'sh'
+        "exec "AsyncRun! time bash %"
+    "elseif &filetype == 'python'
+        "exec "AsyncRun! time python %"
+    "endif
+"endfunction
 
 " set one key make 
 " nmap <Leader><F5> :wa<CR>:make<CR><CR>:cw<CR>
-nmap <Leader>r :wa<CR>:make<CR>:cw<CR><CR>:!./main<CR>
+" nmap <Leader>r :wa<CR>:make<CR>:cw<CR><CR>:!./main<CR>
+
+""""""""""""""" set the color of ycm warning 
+" set the color scheme 
+"highlight YcmWarningLine ctermbg=1
+
+""""""""""""""" Set the Hightlight file of glsl
+autocmd! BufNewFile,BufRead *.geo set ft=glsl
